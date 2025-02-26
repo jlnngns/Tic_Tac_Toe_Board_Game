@@ -1,0 +1,82 @@
+# Tic-Tac-Toe Game in Python
+board = ['-', '-', '-',
+         '-', '-', '-',
+         '-', '-', '-']
+currentPlayer = "X"
+winner = None
+gameRunning = True
+
+# Print board function
+def printBoard(board):
+    print(board[0] + " | " + board[1] + " | " + board[2])
+    print("-" * 9)
+    print(board[3] + " | " + board[4] + " | " + board[5])
+    print("-" * 9)
+    print(board[6] + " | " + board[7] + " | " + board[8])
+
+# Take player input
+def playerInput(board):
+    while True:
+        try:
+            inp = int(input(f"Enter a number 1-9 \033[1;34m Player ({currentPlayer}) \033[0;0m : "))
+            if 1 <= inp <= 9 and board[inp-1] == "-":
+                board[inp-1] = currentPlayer
+                break
+            else:
+                print(f"Oops! Try again! Player \033[1;34m ({currentPlayer}) \033[0;0m ! ")
+                printBoard(board)
+        except ValueError:
+            print("Invalid input. Please enter a number between 1 and 9.")
+
+# Check win conditions
+def checkHorizontal(board):
+    if (board[0] == board[1] == board[2] and board[0] != "-") or \
+       (board[3] == board[4] == board[5] and board[3] != "-") or \
+       (board[6] == board[7] == board[8] and board[6] != "-"):
+        return True
+    return False
+
+def checkRow(board):
+    if (board[0] == board[3] == board[6] and board[0] != "-") or \
+       (board[1] == board[4] == board[7] and board[1] != "-") or \
+       (board[2] == board[5] == board[8] and board[2] != "-"):
+        return True
+    return False
+
+def checkDiagonal(board):
+    if (board[0] == board[4] == board[8] and board[0] != "-") or \
+       (board[2] == board[4] == board[6] and board[2] != "-"):
+        return True
+    return False
+
+# Check for win or tie
+def checkWin():
+    global winner, gameRunning
+    if checkHorizontal(board) or checkRow(board) or checkDiagonal(board):
+        winner = currentPlayer
+        printBoard(board)
+        print(f"\033[1;32m The winner is {winner}! \033[0;0m")
+        gameRunning = False  # Stop the game
+
+def checkTie():
+    global gameRunning
+    if "-" not in board and winner is None:
+        printBoard(board)
+        print("It's a tie!")
+        gameRunning = False
+
+# Switch player
+def switchPlayer():
+    global currentPlayer
+    currentPlayer = "O" if currentPlayer == "X" else "X"
+
+# Game loop
+while gameRunning:
+    printBoard(board)
+    playerInput(board)
+    checkWin()
+    if not gameRunning:  # Stop the game if there is a winner
+        break
+    checkTie()
+    if gameRunning:  # Switch player only if the game is still running
+        switchPlayer()
